@@ -19,7 +19,7 @@ X = df.drop(columns=["Churn"])  # Assuming 'Churn' is the target variable
 y = df["Churn"]
 
 # Split dataset into training and testing sets (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Hyperparameters grid for GridSearchCV
 param_grid = {
@@ -31,17 +31,17 @@ param_grid = {
 # Train decision tree using GridSearchCV
 dt_model = DecisionTreeClassifier(random_state=42)
 grid_search = GridSearchCV(dt_model, param_grid, cv=5, scoring="accuracy", n_jobs=-1)
-grid_search.fit(X_train, y_train)
+grid_search.fit(x_train, y_train)
 
 # Best parameters
 print(f"Best Parameters: {grid_search.best_params_}")
 
 # Train the best decision tree model
 best_dt = grid_search.best_estimator_
-best_dt.fit(X_train, y_train)
+best_dt.fit(x_train, y_train)
 
 # Make predictions
-y_pred = best_dt.predict(X_test)
+y_pred = best_dt.predict(x_test)
 
 # Evaluate model performance
 accuracy = accuracy_score(y_test, y_pred)
@@ -60,10 +60,10 @@ print(classification_report(y_test, y_pred))
 
 # Display confusion matrix
 plt.figure(figsize=(6, 4))
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues", xticklabels=["No Churn", "Churn"], yticklabels=["No Churn", "Churn"])
+sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="coolwarm", xticklabels=["No Churn", "Churn"], yticklabels=["No Churn", "Churn"])
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
-plt.title("Confusion Matrix")
+plt.title("Confusion Matrix of Decision Tree Model")
 plt.show()
 
 # Visualize the decision tree
