@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -13,23 +12,23 @@ df = pd.read_csv(file_path)
 # Drop missing values
 df = df.dropna()
 
-# categorical variables to numerical
+# Categorical variables to numerical
 df = pd.get_dummies(df, drop_first=True)
 
 X = df.drop(columns=["Churn"])  # Assuming 'Churn' is the target variable
 y = df["Churn"]
 
-#(80% train, 20% test)
+# Split dataset into training and testing sets (80% train, 20% test)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# hyperparameter grid for GridSearchCV
+# Hyperparameters grid for GridSearchCV
 param_grid = {
     "max_depth": [3, 5, 10, None],
     "min_samples_split": [2, 5, 10],
     "criterion": ["gini", "entropy"]
 }
 
-# train Decision Tree using GridSearchCV
+# Train decision tree using GridSearchCV
 dt_model = DecisionTreeClassifier(random_state=42)
 grid_search = GridSearchCV(dt_model, param_grid, cv=5, scoring="accuracy", n_jobs=-1)
 grid_search.fit(X_train, y_train)
@@ -37,7 +36,7 @@ grid_search.fit(X_train, y_train)
 # Best parameters
 print(f"Best Parameters: {grid_search.best_params_}")
 
-# Train the best Decision Tree model
+# Train the best decision tree model
 best_dt = grid_search.best_estimator_
 best_dt.fit(X_train, y_train)
 
