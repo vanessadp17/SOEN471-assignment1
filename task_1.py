@@ -12,7 +12,7 @@ print(df.describe())
 
 # Check for missing values
 print("\nMissing Values:")
-print(df.isnull().sum())
+print(df.isnull().any())
 
 # Drop rows with missing data
 df = df.dropna()
