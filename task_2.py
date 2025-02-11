@@ -15,11 +15,11 @@ df = df.dropna()
 # Categorical variables to numerical
 df = pd.get_dummies(df, drop_first=True)
 
-X = df.drop(columns=["Churn"])  # Assuming 'Churn' is the target variable
+x = df.drop(columns=["Churn"])  # Assuming 'Churn' is the target variable
 y = df["Churn"]
 
 # Split dataset into training and testing sets (80% train, 20% test)
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
 # Hyperparameters grid for GridSearchCV
 param_grid = {
@@ -68,6 +68,6 @@ plt.show()
 
 # Visualize the decision tree
 plt.figure(figsize=(12, 8))
-plot_tree(best_dt, feature_names=X.columns, class_names=["No Churn", "Churn"], filled=True, rounded=True, fontsize=8)
+plot_tree(best_dt, feature_names=x.columns, class_names=["No Churn", "Churn"], filled=True, rounded=True, fontsize=8)
 plt.title("Decision Tree Visualization")
 plt.show()
