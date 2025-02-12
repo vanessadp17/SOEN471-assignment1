@@ -19,7 +19,7 @@ df = df.dropna()
 # Categorical variables to numerical
 df = pd.get_dummies(df, drop_first=True)
 
-x = df.drop(columns=["Churn"])  # Assuming 'Churn' is the target variable
+x = df.drop(columns=["Churn", "CustomerID"])  # Assuming 'Churn' is the target variable
 y = df["Churn"]
 
 # Split dataset into training and testing sets (80% train, 20% test)
@@ -45,7 +45,6 @@ print(f"Best Parameters: {rand_search.best_params_}\n")
 
 # Train the best random forest model
 best_rf = rand_search.best_estimator_
-# best_rf.fit(pd.DataFrame(x_train, columns=x.columns), y_train)
 
 # Make predictions
 y_pred = best_rf.predict(x_test)
@@ -70,6 +69,27 @@ plt.ylabel("Actual")
 plt.title("Confusion Matrix of Random Forest Model")
 plt.show()
 
+# Feature importance
+importance = best_rf.feature_importances_
+
+# Create a DataFrame for easy visualization
+feature_importance_df = pd.DataFrame({
+    'Feature': x_train.columns,
+    'Importance': importance
+})
+
+# Sort the features by importance in descending order
+feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
+
+# Plot the feature importance
+plt.figure(figsize=(24, 8))
+sns.barplot(x='Importance', y='Feature', data=feature_importance_df)
+plt.title('Feature Importance from Random Forest')
+plt.show()
+
+# Print feature importance
+print(feature_importance_df)
+
 # Define the folder path
 output_folder = "random_forest_output_images"
 os.makedirs(output_folder, exist_ok=True)
@@ -79,7 +99,7 @@ os.makedirs(output_folder, exist_ok=True)
 for i in range(5):
     print()
     tree = best_rf.estimators_[i]
-    dot_data = export_graphviz(tree, feature_names=x_train.columns, filled=True, max_depth=3, impurity=False, proportion=True)
+    dot_data = export_graphviz(tree, feature_names=x_train.columns, class_names=["No Churn", "Churn"], filled=True, max_depth=5, impurity=False, proportion=True)
 
     filename = os.path.join(output_folder, f"tree_visualization_{i + 1}")
     graph = graphviz.Source(dot_data)
@@ -94,6 +114,7 @@ for i in range(5):
     plt.show()
 
     y_pred = tree.predict(x_test.values)
+
     # Evaluate tree performance
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred, zero_division=0)
