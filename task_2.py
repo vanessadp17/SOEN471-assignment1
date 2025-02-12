@@ -15,7 +15,7 @@ df = df.dropna()
 # Categorical variables to numerical
 df = pd.get_dummies(df, drop_first=True)
 
-x = df.drop(columns=["Churn"])  # Assuming 'Churn' is the target variable
+x = df.drop(columns=["CustomerID", "Churn"])  # Assuming 'Churn' is the target variable
 y = df["Churn"]
 
 # Split dataset into training and testing sets (80% train, 20% test)
